@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { Github, Linkedin, MapPin, BookOpen, Code2, ExternalLink } from "lucide-react";
 
 // Hero Section Component
@@ -602,15 +602,24 @@ const ContactSection = () => {
 
 // Main Page Component
 export default function Index() {
-  const { scrollY } = useScroll();
-  const navBg = useTransform(scrollY, [0, 100], ["rgba(11, 15, 26, 0)", "rgba(11, 15, 26, 0.8)"]);
+  const [navScrolled, setNavScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setNavScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className="relative bg-background overflow-hidden">
       {/* Navigation */}
       <motion.nav
-        className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-blue-500/10"
-        style={{ backgroundColor: navBg as any }}
+        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-blue-500/10 transition-all duration-300 ${
+          navScrolled ? "bg-gray-950/80" : "bg-transparent"
+        }`}
       >
         <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
           <motion.div className="text-xl font-display font-bold text-blue-400">FF</motion.div>
